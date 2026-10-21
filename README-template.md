@@ -10,7 +10,7 @@
 
 | Member | Part of the work owned | Notebooks | Approach-log rows |
 |---|---|---|---|
-| | | | |
+|Harshal Patil| CI-CD | money_reconciliation.ipynb |0-7|
 | | | | |
 | | | | |
 | | | | |
