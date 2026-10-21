@@ -1,0 +1,16 @@
+﻿# Challenges log · Brief C · Money · Group N
+
+What broke or surprised us, what we tried, what we changed and why. Entries are dated and written as they happen. A log written on the last evening answers no interview question, and the commit history shows which kind this is.
+
+| # | Phase | What broke or surprised us | What we tried first | What we changed, and why | What we would do differently next time | Who | Date |
+|---|---|---|---|---|---|---|---|
+| 0 | Profile and clean | Our first join of invoices to payments returned almost no matches. | Printed ten ids from each file side by side. | Wrote a normalisation rule: strip prefix and hyphens, match on numeric suffix. Q1 ref is INV-2026-XXXXXX but Q2 is INV2026XXXXXX without hyphens. | Profile id formats before writing any join. | example | example |
+| 1 | Profile | invoices amount column loaded as object (string) because of thousand-separator commas e.g. "1,499.00". All downstream sum() calls returned errors. | Tried pd.to_numeric with errors='coerce' — introduced NaN silently. | Re-read with pd.read_csv(..., thousands=',') so amounts parse correctly from the start. | Always check dtype of every monetary column at profile stage. | | 2026-10-21 |
+| 2 | Unit mismatch | payment amounts are in paise (100 per rupee); invoices in rupees. First bridge showed gap of Rs 12 crore — clearly wrong. | Checked Razorpay docs: confirmed paise unit. | Divided all payment amounts by 100 at load time; added assertion that no payment exceeds Rs 100,000. | Add unit check as the very first profiling cell for any payments feed. | | 2026-10-21 |
+| 3 | Join inflation | LEFT JOIN on invoice_id returned more rows than invoices. Headline collected-Rs jumped above invoiced-Rs. | Counted rows before and after; printed the duplicating keys. | Discovered some invoices have split/retry payments (pay_ ids for same INV ref). Aggregated payments per invoice_id before joining. | Always validate join row count before reading any aggregated figure. | | 2026-10-21 |
+| 4 | Timing boundary | Several large invoices in late March 2026 (Q1) had payments in early April (Q2). Bridge gap looked large until timing payments were isolated. | Sorted unmatched invoices by date — saw cluster near quarter boundary. | Added epoch-to-date conversion and a timing flag for cross-quarter pairs. Timing becomes its own bar in the bridge. | Check date distribution of unmatched rows before labelling them as true gaps. | | 2026-10-21 |
+| 5 | Duplicate payment_ids | settlements table had repeated payment_id entries where one payment appeared in two settlement batches. | Tried groupby settlement_id — still duplicated at payment level. | Dropped duplicate payment_id rows before joining; logged count. | Dedup every table on its primary key as the first cleaning step. | | 2026-10-21 |
+
+## The entry we are proudest of
+
+When the first join showed collected > invoiced, the instinct was to doubt the data source. Instead, we printed the duplicate keys and discovered that split retries on a single invoice (e.g., UPI fail then UPI capture) inflated the payment count. Aggregating payments by invoice reference before joining fixed the headline and revealed the real gap cleanly. That discipline — never trust a join row count until you can explain every added row — is the skill we carried into every subsequent join.

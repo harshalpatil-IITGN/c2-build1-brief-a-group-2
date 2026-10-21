@@ -1,0 +1,7 @@
+category,invoice_count,amount_rs
+invoiced,162876.0,268283173.0
+matched,52345.0,85926887.0
+timing,0.0,0.0
+unmatched_invoice,110531.0,182356286.0
+unmatched_payment,567.0,970827.0
+collected,,87251914.0
