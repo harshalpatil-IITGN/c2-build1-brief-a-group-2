@@ -12,7 +12,7 @@
 |---|---|---|---|
 |Harshal Patil| CI-CD | money_reconciliation.ipynb |0-7|
 | Kshitij Chabaria| | 8-9 | |
-| | | | |
+| Gaurang Khandelwal| | | |
 | | | | |
 
 ## How to run
