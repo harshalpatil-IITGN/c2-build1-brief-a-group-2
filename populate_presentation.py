@@ -2,14 +2,19 @@ import pptx
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pathlib import Path
-import os
+import io
+import shutil
 
 BASE_DIR = Path(__file__).resolve().parent
 template_path = BASE_DIR / "slides" / "Build1_Slide_Template.pptx"
 img_tree_path = BASE_DIR / "slides" / "slide3_growth_tree.png"
 img_chart_path = BASE_DIR / "slides" / "slide4_chart.png"
 
-prs = pptx.Presentation(str(template_path))
+# Read template safely into memory
+with open(template_path, 'rb') as f:
+    template_bytes = io.BytesIO(f.read())
+
+prs = pptx.Presentation(template_bytes)
 
 # Colors
 C_NAVY = RGBColor(15, 41, 74)
@@ -104,7 +109,6 @@ for shape in s3.shapes:
         elif '[Insert the diagram' in t:
             shape.text_frame.clear()
 
-# Add picture to slide 3 inside container if not already added
 has_pic3 = any(s.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE and s.name != 'Picture 4' for s in s3.shapes)
 if not has_pic3 and img_tree_path.exists():
     s3.shapes.add_picture(str(img_tree_path), Inches(0.55), Inches(1.85), Inches(12.20), Inches(4.50))
@@ -161,7 +165,6 @@ for shape in s5.shapes:
         elif '[Insert slides/slide4_chart.png]' in t:
             shape.text_frame.clear()
 
-# Add picture to slide 5 inside container if not already added
 has_pic5 = any(s.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE and s.name != 'Picture 4' for s in s5.shapes)
 if not has_pic5 and img_chart_path.exists():
     s5.shapes.add_picture(str(img_chart_path), Inches(6.05), Inches(1.85), Inches(6.70), Inches(4.50))
@@ -312,8 +315,37 @@ for shape in s10.shapes:
             p5 = tf.add_paragraph()
             format_para(p5, 'Git Tracking: Branch harshal_branch | Commit verified & reproducible', 'Arial', 11, color=C_SLATE, space_after=0)
 
-# Save presentation to slides/ and brief_a_kshitij/
-prs.save(str(BASE_DIR / 'slides' / 'Build1_Slide_Template.pptx'))
-prs.save(str(BASE_DIR / 'slides' / 'Brief_A_Growth_Presentation.pptx'))
-prs.save(str(BASE_DIR / 'brief_a_kshitij' / 'Brief_A_Growth_Presentation.pptx'))
-print("Successfully generated and saved presentations!")
+# Save presentation safely to temporary in-memory buffer
+temp_buf = io.BytesIO()
+prs.save(temp_buf)
+content = temp_buf.getvalue()
+
+targets = [
+    BASE_DIR / 'slides' / 'Brief_A_Growth_Presentation.pptx',
+    BASE_DIR / 'brief_a_kshitij' / 'Brief_A_Growth_Presentation.pptx'
+]
+
+saved_paths = []
+locked_paths = []
+
+for target in targets:
+    try:
+        with open(target, 'wb') as f:
+            f.write(content)
+        saved_paths.append(str(target))
+    except PermissionError:
+        locked_paths.append(str(target))
+        # Save to fallback file so updated version is immediately available
+        fallback = target.parent / (target.stem + "_updated.pptx")
+        with open(fallback, 'wb') as f:
+            f.write(content)
+        saved_paths.append(f"{fallback} (fallback, original was open in PowerPoint)")
+
+print("Presentation generation completed:")
+for s in saved_paths:
+    print(f"  Saved: {s}")
+if locked_paths:
+    print("  Note: The following files were locked by PowerPoint:")
+    for l in locked_paths:
+        print(f"    - {l}")
+    print("  Close PowerPoint and re-run if you want to overwrite the open file directly.")
