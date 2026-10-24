@@ -1,10 +1,12 @@
 import os
-# pyrefly: ignore[missing-import]
+from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
-os.makedirs('slides', exist_ok=True)
+BASE_DIR = Path(__file__).resolve().parent
+slides_dir = BASE_DIR / 'slides'
+slides_dir.mkdir(parents=True, exist_ok=True)
 
 # -------------------------------------------------------------------------
 # 1. SLIDE 3: GROWTH TREE & CHANNEL SHIFT
@@ -14,26 +16,20 @@ fig, ax = plt.subplots(figsize=(13, 6.8), dpi=300)
 fig.patch.set_facecolor('#FFFFFF')
 ax.set_facecolor('#FFFFFF')
 
-# Remove axis spines and ticks
 ax.axis('off')
 ax.set_xlim(0, 100)
 ax.set_ylim(0, 100)
 
-# Colors
 navy = '#0F294A'
 teal = '#0E7490'
 gold = '#D97706'
 slate = '#334155'
-light_blue = '#F0F9FF'
-border_blue = '#BAE6FD'
 green = '#15803D'
 red = '#B91C1C'
 
-# Title
 ax.text(50, 96, "The Multiplicative Growth Tree & Channel Shift (H1 2025 vs H1 2026)", 
         fontsize=16, fontweight='bold', color=navy, ha='center', fontfamily='sans-serif')
 
-# Root Box: Total Results
 root_box = patches.FancyBboxPatch((32, 77), 36, 14, boxstyle="round,pad=0.8,rounding_size=1.5", 
                                   fc='#E0F2FE', ec='#0284C7', lw=2)
 ax.add_patch(root_box)
@@ -41,7 +37,6 @@ ax.text(50, 86.5, "Total Test Results Volume", fontsize=13, fontweight='bold', c
 ax.text(50, 82.5, "H1 2025: 357,769   ->   H1 2026: 378,358", fontsize=11, color=slate, ha='center')
 ax.text(50, 78.5, "Actual Growth: +5.75% (+20,589 results)", fontsize=11.5, fontweight='bold', color='#0369A1', ha='center')
 
-# 4 Branches
 branches = [
     {"name": "1. Unique Patients", "val25": "204,444", "val26": "212,126", "growth": "+3.76%", "color": green, "x": 12.5},
     {"name": "2. Visits / Patient", "val25": "1.488", "val26": "1.474", "growth": "-0.98%", "color": red, "x": 37.5},
@@ -50,11 +45,9 @@ branches = [
 ]
 
 for b in branches:
-    # Connecting line from root
     ax.annotate('', xy=(b['x'], 65), xytext=(50, 77),
                 arrowprops=dict(arrowstyle='->', color='#94A3B8', lw=1.8, shrinkA=0, shrinkB=0))
     
-    # Branch box
     box = patches.FancyBboxPatch((b['x'] - 11, 46), 22, 18, boxstyle="round,pad=0.6,rounding_size=1.2",
                                 fc='#F8FAFC', ec='#CBD5E1', lw=1.5)
     ax.add_patch(box)
@@ -64,16 +57,13 @@ for b in branches:
     ax.text(b['x'], 51.5, f"2026: {b['val26']}", fontsize=10, color=slate, ha='center')
     ax.text(b['x'], 47.5, f"Growth: {b['growth']}", fontsize=11, fontweight='bold', color=b['color'], ha='center')
 
-# Multiplication note
 ax.text(50, 41, "(1 + 3.76%)  x  (1 - 0.98%)  x  (1 + 2.19%)  x  (1 + 0.72%)  =  1 + 5.75%  (Exact Product, Gap = 0.0%)",
         fontsize=10.5, fontstyle='italic', color='#475569', ha='center', bbox=dict(boxstyle='square,pad=0.3', fc='#F1F5F9', ec='none'))
 
-# Channel Breakdown Section
 ch_title_box = patches.Rectangle((4, 28), 92, 0.4, fc='#CBD5E1', ec='none')
 ax.add_patch(ch_title_box)
 ax.text(50, 31, "CHANNEL BREAKDOWN & CONTRIBUTION TO TOTAL GROWTH", fontsize=12, fontweight='bold', color=navy, ha='center')
 
-# Channel Boxes
 # Home
 home_box = patches.FancyBboxPatch((6, 6), 41, 20, boxstyle="round,pad=0.6,rounding_size=1.2",
                                  fc='#F0FDF4', ec='#86EFAC', lw=1.5)
@@ -93,7 +83,7 @@ ax.text(73.5, 13.5, "Patients: -8.28%  |  Visits/Pt: -6.08%  |  Tests/V: +2.35%"
 ax.text(73.5, 9, "Growth Drag: -7.74 percentage points", fontsize=10.5, fontweight='bold', color=red, ha='center')
 
 plt.tight_layout()
-plt.savefig('slides/slide3_growth_tree.png', dpi=300, bbox_inches='tight')
+plt.savefig(str(slides_dir / 'slide3_growth_tree.png'), dpi=300, bbox_inches='tight')
 plt.close()
 print("Generated slides/slide3_growth_tree.png")
 
@@ -103,7 +93,6 @@ print("Generated slides/slide3_growth_tree.png")
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 5.2), dpi=300)
 fig.patch.set_facecolor('#FFFFFF')
 
-# Panel 1: Channel Volumes
 channels = ['Clinic', 'Home']
 y2025 = [245042, 110929]
 y2026 = [223727, 152709]
@@ -121,14 +110,12 @@ ax1.set_ylabel("Result Rows", fontsize=10, color=slate)
 ax1.legend(frameon=True, facecolor='#FFFFFF')
 ax1.grid(axis='y', linestyle='--', alpha=0.5)
 
-# Value annotations
 ax1.text(0 - width/2, y2025[0] + 4000, f"{y2025[0]:,}", ha='center', fontsize=9, color=slate)
 ax1.text(0 + width/2, y2026[0] + 4000, f"{y2026[0]:,}\n(-12.1%)", ha='center', fontsize=9, fontweight='bold', color='#DC2626')
 ax1.text(1 - width/2, y2025[1] + 4000, f"{y2025[1]:,}", ha='center', fontsize=9, color=slate)
 ax1.text(1 + width/2, y2026[1] + 4000, f"{y2026[1]:,}\n(+37.7%)", ha='center', fontsize=9, fontweight='bold', color='#059669')
 ax1.set_ylim(0, 300000)
 
-# Panel 2: City Growth vs Plan Attainment
 cities = ['Ahmedabad', 'Bengaluru', 'Chennai', 'Hyderabad', 'Jaipur', 'Pune']
 attainment = [76.8, 73.9, 70.4, 74.9, 63.6, 74.7]
 colors = ['#0EA5E9', '#0EA5E9', '#F97316', '#0EA5E9', '#EF4444', '#0EA5E9']
@@ -147,7 +134,6 @@ for bar in bars:
     w = bar.get_width()
     ax2.text(w + 1.5, bar.get_y() + bar.get_height()/2, f"{w:.1f}%", va='center', fontsize=9, fontweight='bold', color=slate)
 
-# Panel 3: Package Share & Volume Expansion
 pkg_cats = ['Packages\n(PK01-04)', 'Routine Tests\n(Non-Package)']
 pkg_25 = [44467, 313302]
 pkg_26 = [60110, 318248]
@@ -171,6 +157,6 @@ ax3.text(1 + width/2, pkg_26[1] + 6000, f"{pkg_26[1]:,}\n(+1.6%)", ha='center', 
 ax3.set_ylim(0, 360000)
 
 plt.tight_layout()
-plt.savefig('slides/slide4_chart.png', dpi=300, bbox_inches='tight')
+plt.savefig(str(slides_dir / 'slide4_chart.png'), dpi=300, bbox_inches='tight')
 plt.close()
 print("Generated slides/slide4_chart.png")

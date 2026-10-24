@@ -1,13 +1,15 @@
-# pyrefly: ignore[missing-import]
 import pptx
-# pyrefly: ignore[missing-import]
 from pptx.util import Inches, Pt
-# pyrefly: ignore[missing-import]
 from pptx.dml.color import RGBColor
-# pyrefly: ignore[missing-import]
+from pathlib import Path
 import os
 
-prs = pptx.Presentation('slides/Build1_Slide_Template.pptx')
+BASE_DIR = Path(__file__).resolve().parent
+template_path = BASE_DIR / "slides" / "Build1_Slide_Template.pptx"
+img_tree_path = BASE_DIR / "slides" / "slide3_growth_tree.png"
+img_chart_path = BASE_DIR / "slides" / "slide4_chart.png"
+
+prs = pptx.Presentation(str(template_path))
 
 # Colors
 C_NAVY = RGBColor(15, 41, 74)
@@ -32,22 +34,22 @@ s1 = prs.slides[0]
 for shape in s1.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if 'BRIEF <LETTER>' in t:
+        if 'BRIEF' in t and ('<LETTER>' in t or 'BRIEF A' in t):
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'BRIEF A · GROWTH H1 2025 vs H1 2026 · GROUP 2', 'Arial', 11, bold=True, color=RGBColor(2, 132, 199))
-        elif '<The question, as a title>' in t:
+        elif '<The question, as a title>' in t or 'Where Did the Growth Come From' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'Where Did the Growth Come From — and Why Did Jaipur and Chennai Lag?', 'Georgia', 34, bold=True, color=C_NAVY)
-        elif '<The claim, in one sentence' in t:
+        elif '<The claim, in one sentence' in t or 'Test results grew 5.75%' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'Test results grew 5.75% from H1 2025 to H1 2026 (357,769 to 378,358 rows), propelled by a 37.7% surge in home collection and 35.2% package test adoption, while clinic results declined 12.1% and patient acquisition lagged in Jaipur (-9.9%) and Chennai (+1.3%).', 'Arial', 14, color=C_SLATE)
-        elif '<Member>' in t:
+        elif '<Member>' in t or 'Harshal Patil' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
@@ -60,7 +62,7 @@ s2 = prs.slides[1]
 for shape in s2.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if "<Dr Menon's words" in t:
+        if "<Dr Menon's words" in t or 'Dr Menon' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
@@ -94,7 +96,7 @@ s3 = prs.slides[2]
 for shape in s3.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if '<Your completed diagram' in t:
+        if '<Your completed diagram' in t or 'The Growth Tree' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
@@ -102,8 +104,10 @@ for shape in s3.shapes:
         elif '[Insert the diagram' in t:
             shape.text_frame.clear()
 
-# Add picture to slide 3 inside container
-s3.shapes.add_picture('slides/slide3_growth_tree.png', Inches(0.55), Inches(1.85), Inches(12.20), Inches(4.50))
+# Add picture to slide 3 inside container if not already added
+has_pic3 = any(s.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE and s.name != 'Picture 4' for s in s3.shapes)
+if not has_pic3 and img_tree_path.exists():
+    s3.shapes.add_picture(str(img_tree_path), Inches(0.55), Inches(1.85), Inches(12.20), Inches(4.50))
 
 # =========================================================================
 # SLIDE 4: 3 · THE CLAIM
@@ -112,12 +116,12 @@ s4 = prs.slides[3]
 for shape in s4.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if '<One sentence>' in t:
+        if '<One sentence>' in t or 'The one sentence' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'The one sentence Dr Menon can say to her board', 'Georgia', 24, bold=True, color=C_NAVY)
-        elif '<The sentence Dr Menon can say' in t:
+        elif '<The sentence Dr Menon can say' in t or 'Kalpa grew test volume' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
@@ -130,12 +134,12 @@ s5 = prs.slides[4]
 for shape in s5.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if '<Two or three numbers' in t:
+        if '<Two or three numbers' in t or 'Channel shift' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'Channel shift, package lift, and regional shortfall', 'Georgia', 24, bold=True, color=C_NAVY)
-        elif 'Number 1:' in t:
+        elif 'Number 1:' in t or 'Number 1 ·' in t:
             tf = shape.text_frame
             tf.clear()
             
@@ -157,8 +161,10 @@ for shape in s5.shapes:
         elif '[Insert slides/slide4_chart.png]' in t:
             shape.text_frame.clear()
 
-# Add picture to slide 5 inside container
-s5.shapes.add_picture('slides/slide4_chart.png', Inches(6.05), Inches(1.85), Inches(6.70), Inches(4.50))
+# Add picture to slide 5 inside container if not already added
+has_pic5 = any(s.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE and s.name != 'Picture 4' for s in s5.shapes)
+if not has_pic5 and img_chart_path.exists():
+    s5.shapes.add_picture(str(img_chart_path), Inches(6.05), Inches(1.85), Inches(6.70), Inches(4.50))
 
 # =========================================================================
 # SLIDE 6: 5 · THE CAVEAT AND THE ALTERNATIVE
@@ -167,7 +173,7 @@ s6 = prs.slides[5]
 for shape in s6.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if '<What would change the claim' in t:
+        if '<What would change the claim' in t or 'What would change' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
@@ -195,12 +201,12 @@ s7 = prs.slides[6]
 for shape in s7.shapes:
     if shape.has_text_frame:
         t = shape.text_frame.text
-        if '<What to do, what it costs' in t:
+        if '<What to do, what it costs' in t or 'What to do' in t:
             tf = shape.text_frame
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'What to do, what it costs, what being wrong costs', 'Georgia', 24, bold=True, color=C_NAVY)
-        elif 'Do: <the action' in t:
+        elif 'Do: <the action' in t or 'Do (on Monday morning):' in t:
             tf = shape.text_frame
             tf.clear()
             
@@ -251,7 +257,7 @@ for shape in s9.shapes:
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'Appendix A · The decisions that moved the headline', 'Georgia', 24, bold=True, color=C_NAVY)
-        elif 'Rule 1:' in t:
+        elif 'Rule 1:' in t or 'Rule 1 ·' in t:
             tf = shape.text_frame
             tf.clear()
             
@@ -287,7 +293,7 @@ for shape in s10.shapes:
             tf.clear()
             p = tf.paragraphs[0]
             format_para(p, 'Appendix B · The cold run verification', 'Georgia', 24, bold=True, color=C_NAVY)
-        elif 'Fresh Codespace' in t:
+        elif 'Fresh Codespace' in t or 'Test Environment:' in t:
             tf = shape.text_frame
             tf.clear()
             
@@ -306,8 +312,8 @@ for shape in s10.shapes:
             p5 = tf.add_paragraph()
             format_para(p5, 'Git Tracking: Branch harshal_branch | Commit verified & reproducible', 'Arial', 11, color=C_SLATE, space_after=0)
 
-# Save presentation to both slides/ and brief_a_kshitij/
-prs.save('slides/Build1_Slide_Template.pptx')
-prs.save('slides/Brief_A_Growth_Presentation.pptx')
-prs.save('brief_a_kshitij/Brief_A_Growth_Presentation.pptx')
+# Save presentation to slides/ and brief_a_kshitij/
+prs.save(str(BASE_DIR / 'slides' / 'Build1_Slide_Template.pptx'))
+prs.save(str(BASE_DIR / 'slides' / 'Brief_A_Growth_Presentation.pptx'))
+prs.save(str(BASE_DIR / 'brief_a_kshitij' / 'Brief_A_Growth_Presentation.pptx'))
 print("Successfully generated and saved presentations!")
