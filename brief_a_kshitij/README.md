@@ -8,11 +8,11 @@ Dr Priya Menon, COO of Kalpa Health, observed that test volume grew roughly 5% i
 
 ## Members and parts
 
-| Member                 | Part of the work owned                                                                         | Notebooks                                                                           | Approach-log rows |
-| ---------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ----------------- |
-| **Harshal Patil**      | Project CI/CD, Data Engineering Pipeline, DateTime Normalization & 1-to-1 Null Code Imputation | `brief_a_kshitij/notebooks/Cleanin_g_Function.ipynb`                                | Rows 1, 2, 4, 5   |
+| Member                       | Part of the work owned                                                                         | Notebooks                                                                               | Approach-log rows |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ----------------- |
+| **Harshal Patil**      | Project CI/CD, Data Engineering Pipeline, DateTime Normalization & 1-to-1 Null Code Imputation | `brief_a_kshitij/notebooks/Cleanin_g_Function.ipynb`                                  | Rows 1, 2, 4, 5   |
 | **Kshitij Chabaria**   | Core Analytical Modeling, Growth Tree Formulation & Channel/Package Decomposition              | `brief_a_kshitij/notebooks/Cleanin_g_Function.ipynb`, `Build_Week_1_Practice.ipynb` | Rows 6, 8, 10, 12 |
-| **Gaurang Khandelwal** | Regional Market Diagnostics (Jaipur & Chennai Audit), Plan Reconciliation                      | `brief_a_kshitij/notebooks/Cleanin_g_Function.ipynb`                                | Rows 3, 7, 9, 11  |
+| **Gaurang Khandelwal** | Regional Market Diagnostics (Jaipur & Chennai Audit), Plan Reconciliation                     | `brief_a_kshitij/notebooks/Cleanin_g_Function.ipynb`                                  | Rows 3, 7, 9, 11  |
 
 ## How to run
 
@@ -23,13 +23,13 @@ Dr Priya Menon, COO of Kalpa Health, observed that test volume grew roughly 5% i
 
 ## Links
 
-| What                     | Where                                                                                                                                                                |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Video**                | [drive.google.com/drive/folders/1gcrvVFQsjLno8wPKtElHDGZDW3DNV2DK?usp=sharing](https://drive.google.com/drive/folders/1gcrvVFQsjLno8wPKtElHDGZDW3DNV2DK?usp=sharing) |
-| **Slides**               | `brief_a_kshitij/slides/Build1_Slide_Template.pptx`                                                                                                                  |
-| **Excel Companion**      | `slides/board_number.xlsx`                                                                                                                                           |
-| **Video Transcript**     | `brief_a_kshitij/docs/video_transcript.md`                                                                                                                           |
-| **Data pack provenance** | `datapack/README.md`                                                                                                                                                 |
+| What                           | Where                                                                                                                                                                |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Video**                | [drive.google.com/drive/folders/1gcrvVFQsjLno8wPKtElHDGZDW3DNV2DK?usp=sharing](https://drive.google.com/drive/folders/1gcrvVFQsjLno8wPKtElHDGZDW3DNV2DK?usp=sharing)  |
+| **Slides**               | `brief_a_kshitij/slides/Build1_Slide_Template.pptx`                                                                                                                |
+| **Excel Companion**      | `slides/board_number.xlsx`                                                                                                                                         |
+| **Video Transcript**     | `brief_a_kshitij/docs/video_transcript.md`                                                                                                                         |
+| **Data pack provenance** | `datapack/README.md`                                                                                                                                               |
 
 ## The logs
 
